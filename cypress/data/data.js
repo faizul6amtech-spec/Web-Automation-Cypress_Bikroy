@@ -1,6 +1,6 @@
 class data {
     
-    bikroy_url = 'https://bikroy.com/en'
+    bikroy_url = 'https://6ammart-react.6amtech.com';
     
 
     // Time wait 
