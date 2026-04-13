@@ -1,6 +1,7 @@
 class data {
     
-    bikroy_url = 'https://6ammart-react.6amtech.com';
+    mart_url = 'https://6ammart-admin.6amtech.com/login/admin';
+    marttest_url = 'https://6ammart-dev.6amdev.xyz/login/admin';
     
 
     // Time wait 

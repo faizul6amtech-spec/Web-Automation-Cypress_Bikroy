@@ -1,15 +1,90 @@
-import {Given,When,Then} from "@badeball/cypress-cucumber-preprocessor";
-import homePages from "../../Locators/home"; //home steps commands to connect with homestep to home.js
-import allData from '../../data/data' // date.js page connected to URL & time wait.
-import 'cypress-file-upload';           //import cypress file upload 
-Cypress.config('defaultCommandTimeout', 60000) // time wait
-const locator = new homePages(); 
+import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import homePages from "../../Locators/home";
+import allData from '../../data/data';
+import 'cypress-file-upload';
+
+Cypress.config('defaultCommandTimeout', 60000);
+
+const locator = new homePages();
 const data = new allData();
 
-Given('Open Browser and Visit Website',()=> {
+Given('Open Browser and go to the login page',()=> {
     // Enter the URL
-    cy.visit(data.bikroy_url);
+    cy.visit(data.mart_url);
     });
+Cypress.on('uncaught:exception', (err, runnable) => {
+  if (err.message.includes('$ is not defined')) {
+    return false
+  }
+})
+When('Enter login credentials and click on login button', () => {   
+        //Check mobiles text
+     cy.xpath(locator.emailinputbox).should('be.visible');
+     cy.xpath(locator.emailinputbox).click()
+     cy.xpath(locator.emailinputbox).type('admin@admin.com')
+     cy.xpath(locator.passwordinputbox).should('be.visible');
+     cy.xpath(locator.passwordinputbox).click()
+     cy.xpath(locator.passwordinputbox).type('12345678')           
+     cy.xpath(locator.loginbutton).should('be.visible')
+     cy.xpath(locator.loginbutton).click()
+     cy.wait(2000)
+     
+    });
+
+// Then("Check that it redirect to the home page",  ()=> {              
+//         cy.xpath(locator.adminhomelogo).should('be.visible')
+//        });
+
+// Function
+
+function selectModuleByIndex(index) {
+  cy.xpath(`(//div[@class='module-radio-group']//input[@name='module_type'])[${index}]`)
+    .check({ force: true });
+}
+
+
+
+
+
+
+
+// ----------------------Add New Module----------------------
+
+Then('Click on the settings dropdown ',  ()=> {
+    cy.xpath(locator.Settingsbutton).should('be.visible')
+    cy.xpath(locator.Settingsbutton).click()
+    cy.wait(2000)
+    });
+Then('Click on the system module setup option',  ()=> {
+    cy.xpath(locator.systemmodulesoptions).trigger('mouseover')
+    });
+
+Then('Click on add new module button',  ()=> {
+    cy.xpath(locator.Addnewmodule).should('be.visible')
+    cy.xpath(locator.Addnewmodule).click()  
+});
+Then('Enter all required information and click on save button',  ()=> {
+    cy.xpath(locator.modulenameinputbox).should('be.visible')
+    cy.xpath(locator.modulenameinputbox).type('Testing module')
+    cy.xpath(locator.moduledescriptioninputbox).should('be.visible')
+    cy.xpath(locator.moduledescriptioninputbox).type('This is testing module description')
+    selectModuleByIndex(1); // Select the second radio button (index starts from 1)
+    cy.xpath(locator.moduleiconupload) .attachFile(['invalid-icon.png'])
+    cy.xpath(locator.Modulethambnailupload) .attachFile(['invalid-thumbnail.png'])
+    cy.xpath(locator.addmodulebutton).click()   
+    cy.wait(2000)
+    });
+
+
+
+
+
+
+
+
+
+
+    
     When('Check that bikroy logo is present', () => {
         //Check that bikroy logo
         cy.wait(2000);
