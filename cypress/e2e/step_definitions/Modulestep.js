@@ -49,7 +49,7 @@ Then("Check that it redirect to the home page",  ()=> {
 // Function
 
 function selectModuleByIndex(index) {
-  cy.xpath(`(//div[@class='module-radio-group']//input[@name='module_type'])[${index}]`)
+  cy.xpath(`(${locator.moduleradiobutton})[${index}]`)
     .check({ force: true });
 }
 
@@ -58,8 +58,55 @@ function selectModuleByIndex(index) {
 
 
 
-
 // ----------------------Add New Module----------------------
+
+
+Then('Enter all required information and click on save button', () => {
+
+  const moduleTypes = [1, 2, 3, 4, 5];
+
+  moduleTypes.forEach((type, index) => {
+    cy.xpath(locator.Settingsbutton).click()
+    cy.xpath(locator.Modulesetupdropdown).click()
+    cy.wait(2000)
+    cy.xpath(locator.navbar).should('exist')
+    .then(($el) => {
+    $el[0].scrollTop = 0
+    })
+    // Click Add New Module each time
+    cy.xpath(locator.Addnewmodule).click()
+
+    // Name (make unique)
+    cy.xpath(locator.modulenameinputbox)
+      .should('be.visible')
+      .type(`Testing module ${index + 1}`)
+
+    // Description
+    cy.xpath(locator.moduledescriptioninputbox)
+      .its('0.contentDocument.body')
+      .should('not.be.empty')
+      .then(cy.wrap)
+      .click()
+      .type(`Testing module description ${index + 1}`)
+
+    // Select module type
+    selectModuleByIndex(type)
+
+    // Upload
+    cy.xpath(locator.moduleiconupload)
+      .attachFile('Module/invalid-icon.png')
+
+    cy.xpath(locator.Modulethambnailupload)
+      .attachFile('Module/invalid-icon.png')
+
+    // Save
+    cy.xpath(locator.addmodulebutton).click()
+
+    cy.wait(2000)
+  })
+});
+
+// update module    
 
 Then('Click on the settings dropdown',  ()=> {
     cy.xpath(locator.Settingsbutton).click()
@@ -71,25 +118,6 @@ Then('Click on the settings dropdown',  ()=> {
     })
     });
 
-Then('Click on add new module button',  ()=> {
-    cy.xpath(locator.Addnewmodule).should('be.visible')
-    cy.xpath(locator.Addnewmodule).click()  
-});
-Then('Enter all required information and click on save button',  ()=> {
-    cy.xpath(locator.modulenameinputbox).should('be.visible')
-    cy.xpath(locator.modulenameinputbox).type('Testing module')
-    cy.xpath(locator.moduledescriptioninputbox)
-    .its('0.contentDocument.body')
-    .should('not.be.empty')
-    .then(cy.wrap)
-    .click()
-    .type('Testing module description');
-    selectModuleByIndex(1); // Select the second radio button (index starts from 1)
-    cy.xpath(locator.moduleiconupload) .attachFile('Module/invalid-icon.png')
-    cy.xpath(locator.Modulethambnailupload) .attachFile('Module/invalid-icon.png')
-    cy.xpath(locator.addmodulebutton).click()   
-    cy.wait(2000)
-    });
 
 Then('Click on the module on navbar',  ()=> {
     cy.xpath(locator.modules).should('be.visible')
